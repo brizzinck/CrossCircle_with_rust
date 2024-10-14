@@ -36,7 +36,7 @@ fn render_header(_ui: &mut Ui) {}
 fn main() {
     let window = MainWindow::new();
     let mut option: NativeOptions = NativeOptions::default();
-    option.initial_window_size = Some(Vec2::new(500., 350.));
+    option.initial_window_size = Some(Vec2::new(1500., 1350.));
     option.resizable = false;
     run_native(Box::new(window), option);
 }
