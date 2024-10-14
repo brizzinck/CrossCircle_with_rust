@@ -26,13 +26,14 @@ pub struct Grid {
 }
 
 impl Grid {
-    pub fn update(&mut self, ctx: &Context, frame: &mut Frame) {
-        CentralPanel::default().show(ctx, |ui| {
-            render_header(ui);
-            self.render_step(ui);
-            self.render_blocks(ui, ctx);
-            render_footer(ctx);
-        });
+    pub fn reset_win(&mut self) {
+        self.win = false;
+    }
+    pub fn update(&mut self, ctx: &Context, ui: &mut Ui) {
+        render_header(ui);
+        self.render_step(ui);
+        self.render_blocks(ui, ctx);
+        render_footer(ctx);
     }
     pub fn name(&self) -> &str {
         "CROSS & CIRCLE"
