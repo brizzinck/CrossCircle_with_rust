@@ -2,8 +2,8 @@ use crate::player::Player;
 use crate::state::PlayerState;
 use crate::{render_footer, render_header};
 use eframe::egui::TextStyle::Heading;
-use eframe::egui::{Button, CentralPanel, CtxRef, Ui, Vec2};
-use eframe::epi::Frame;
+use eframe::egui::{Button, CentralPanel, Context, Ui, Vec2};
+use eframe::Frame;
 use std::vec::Vec;
 
 #[derive(Clone)]
@@ -17,6 +17,7 @@ impl Block {
     }
 }
 
+#[derive(Default)]
 pub struct Grid {
     blocks: Vec<Vec<Box<Block>>>,
     player: Player,
@@ -25,27 +26,27 @@ pub struct Grid {
 }
 
 impl Grid {
-    pub fn update(&mut self, ctx: &CtxRef, frame: &mut Frame<'_>) {
+    pub fn update(&mut self, ctx: &Context, frame: &mut Frame) {
         CentralPanel::default().show(ctx, |ui| {
             render_header(ui);
             self.render_step(ui);
-            self.render_blocks(ui);
+            self.render_blocks(ui, ctx);
             render_footer(ctx);
         });
-        frame.set_window_size(Vec2::new(
-            1000.,
-            1000.));
     }
     pub fn name(&self) -> &str {
         "CROSS & CIRCLE"
     }
 
-    pub fn render_blocks(&mut self, ui: &mut Ui) {
+    pub fn render_blocks(&mut self, ui: &mut Ui, ctx: &Context) {
+        let mut i = 0;
+        let mut j = 0;
         for horizontal_block in &mut self.blocks {
             ui.horizontal(|h_ui| {
                 for vertical_block in horizontal_block {
                     h_ui.vertical(|v_ui| {
-                        let button = v_ui.add_sized([75., 75.], Button::new(&vertical_block.data).text_style(Heading));
+                        let button = v_ui.add_sized([100., 100.],
+                                                    Button::new(&vertical_block.data));
                         if button.clicked() && !self.win {
                             if vertical_block.data == " " {
                                 match self.player.current_state {
@@ -60,8 +61,10 @@ impl Grid {
                             }
                         }
                     });
+                    j += 1;
                 }
             });
+            i += 1;
         }
     }
 

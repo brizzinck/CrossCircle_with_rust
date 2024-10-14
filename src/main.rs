@@ -4,39 +4,37 @@ mod state;
 mod bootstrap_window;
 
 use crate::bootstrap_window::MainWindow;
-use eframe::egui::{CtxRef, Label, TopBottomPanel, Ui, Vec2};
-use eframe::epi::{Frame, Storage};
-use eframe::{epi::App, run_native, NativeOptions};
+use eframe::egui::{Context, Label, TopBottomPanel, Ui};
+use eframe::{run_native, App, Frame, NativeOptions};
 
 impl App for MainWindow {
-    fn update(&mut self, ctx: &CtxRef, frame: &mut Frame<'_>) {
+    fn update(&mut self, ctx: &Context, frame: &mut Frame) {
         self.render_bootstrap(ctx, frame);
-
-    }
-    fn setup(&mut self, ctx: &CtxRef, _frame: &mut Frame<'_>, _storage: Option<&dyn Storage>) {
-        self.configure_fonts(ctx);
-    }
-
-    fn name(&self) -> &str {
-        "Bootstrap Window"
     }
 }
 
-fn render_footer(ctx: &CtxRef) {
+fn render_footer(ctx: &Context) {
     TopBottomPanel::bottom("footer").show(ctx, |ui| {
         ui.vertical_centered(|ui| {
             ui.add_space(10.);
-            ui.add(Label::new("v 0.1").monospace());
+            ui.add(Label::new("v0.1.0"));
         });
     });
 }
 
 fn render_header(_ui: &mut Ui) {}
 
-fn main() {
-    let window = MainWindow::new();
-    let mut option: NativeOptions = NativeOptions::default();
-    option.initial_window_size = Some(Vec2::new(1500., 1350.));
-    option.resizable = false;
-    run_native(Box::new(window), option);
+fn main() -> eframe::Result {
+    env_logger::init();
+    let options = NativeOptions {
+        viewport: egui::ViewportBuilder::default()
+            .with_inner_size([1500., 1500.])
+            .with_resizable(false),
+        ..Default::default()
+    };
+    run_native(
+        "Cross & Circle",
+        options,
+        Box::new(|cc| Ok(Box::new(MainWindow::new(cc)))),
+    )
 }

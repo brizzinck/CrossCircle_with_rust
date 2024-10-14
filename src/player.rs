@@ -1,5 +1,6 @@
 use crate::state::PlayerState;
 
+#[derive(Default)]
 pub struct Player {
     pub current_state: PlayerState,
 }
